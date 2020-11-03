@@ -1,4 +1,6 @@
 import React, { useEffect, useState} from 'react';
+import MathJax from 'react-mathjax2'
+
 import styled, {keyframes, css} from 'styled-components';
 
 const fadeIn = keyframes`
@@ -158,7 +160,7 @@ function QuestionPanel({selectThem: {them, questions}, responseProcessing, chang
 
             return (
             <Answer onClick={()=>selectTab(i)} correct={correct} state ={state} active={active}>
-                       <span>{item}</span>
+                       <span><MathJax.Text text={ item }/></span>
                    </Answer  >
             )   
         })
@@ -166,16 +168,37 @@ function QuestionPanel({selectThem: {them, questions}, responseProcessing, chang
 
     return (
         (
+            <MathJax.Context
+            
+            onLoad={ () => console.log("Loaded MathJax script!") }
+            onError={ (MathJax, error) => {
+                console.warn(error);
+                console.log("Encountered a MathJax error, re-attempting a typeset!");
+                MathJax.Hub.Queue(
+                  MathJax.Hub.Typeset()
+                );
+            } }
+            script="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=AM_HTMLorMML"
+            options={ {
+                asciimath2jax: {
+                     useMathMLspacing: true,
+                     delimiters: [["$$","$$"]],
+                     preview: "none",
+                }
+            } }
+        >
             <WrapQuestion>
                <Question>
                    <h2>Тема: {them}</h2>
-        <h2>Вопрос на {point} балл: {question} </h2>
+        <h2>Вопрос на {point} балл:  <MathJax.Text text={ question }/> </h2>
                </Question>
                <Answers>
                     {renderAnswer()}
                     <Button onClick={handleClick}>{state==="chose"?"Ответить":"Дальше"}</Button>
                </Answers>
             </WrapQuestion>
+        </MathJax.Context>
+            
         )
     )
 

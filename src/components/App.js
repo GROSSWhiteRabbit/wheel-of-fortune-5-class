@@ -1,10 +1,16 @@
 import React, { useEffect, useState} from 'react';
-import styled from 'styled-components';
+import styled, {keyframes} from 'styled-components';
 import RightPanel from './RightPanel/RightPanel';
 import Wheel from './Wheel/Wheel';
 import Theme from './Theme/Theme';
-import QuestionPanel from './QuestionPanel/QuestionPanel'
+import QuestionPanel from './QuestionPanel/QuestionPanel';
 import db from '../db';
+
+window.addEventListener(`resize`, event => {
+  const clientWidth = document.documentElement.clientWidth
+
+  document.documentElement.style.fontSize = clientWidth / 84 + 'px'
+});
 
 
 const AppBlock = styled.div`
@@ -14,12 +20,52 @@ height: 100vh;
 /* overflow-y: hidden; */
 `;
 
+const jumps = keyframes`
+   0%,
+  60%,
+  75%,
+  90%,
+  to {
+    -webkit-animation-timing-function: cubic-bezier(.215, .61, .355, 1);
+    animation-timing-function: cubic-bezier(.215, .61, .355, 1)
+  }
+
+  0% {
+    opacity: 0;
+    -webkit-transform: translate3d(0, -3000px, 0) scaleY(3);
+    transform: translate3d(0, -3000px, 0) scaleY(3)
+  }
+
+  60% {
+    opacity: 1;
+    -webkit-transform: translate3d(0, 25px, 0) scaleY(.9);
+    transform: translate3d(0, 25px, 0) scaleY(.9)
+  }
+
+  75% {
+    -webkit-transform: translate3d(0, -10px, 0) scaleY(.95);
+    transform: translate3d(0, -10px, 0) scaleY(.95)
+  }
+
+  90% {
+    -webkit-transform: translate3d(0, 5px, 0) scaleY(.985);
+    transform: translate3d(0, 5px, 0) scaleY(.985)
+  }
+
+  to {
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0)
+  }
+`
+
 const Main = styled.div`
 padding: 2%;
 display:grid;
 grid-template-columns: minmax(100px, 25%) 1fr;
 /* border: 1px solid red; */
 height: 100%;
+animation: ${jumps} 1s;
+
 `;
 const Div = styled.div`
 border: 1px solid blue;
@@ -37,7 +83,7 @@ function App() {
   const [select, setSelect] = useState(0)
   const [leftSideStatus,setLeftSideStatus] = useState('wheel')
   const [score, setScore] = useState(0)
-  const [attempts, setAttempts] = useState(20)
+  const [attempts, setAttempts] = useState(db[select].questions.length)
   const [wasRotate, setWasRotate] = useState(false)
   const [levelQuestion, setLevelQuestion] = useState(0)
 
@@ -55,7 +101,10 @@ function App() {
     setSelect(s)
   },[rotate])
   
-  function animationRotate( der = 2000, turn = 1000  ) {
+  function animationRotate( ) {
+    let der = 2000 + Math.floor(3000* Math.random());
+    const turn = 1000 + Math.floor(3000* Math.random());
+     der =turn*2
     let start = null,
         turnDifference = 0;
     function animation(time) {
@@ -63,11 +112,12 @@ function App() {
         start = time;
       }
       let passed =  time - start ,
-          proggres = passed/der;
+      lineProgress = passed/der;
+      const progres = lineProgress +  lineProgress**2*(1-lineProgress);
 
-      setRotate((rotate)=>rotate - (Math.floor( proggres*turn) - turnDifference) );
-      turnDifference =  Math.floor( proggres*turn)
-      if(proggres <= 1) {
+      setRotate((rotate)=>rotate - (Math.floor( progres*turn) - turnDifference) );
+      turnDifference =  Math.floor( progres*turn)
+      if(passed <= der) {
           requestAnimationFrame(animation)
       } else{
         start = null;
@@ -77,9 +127,13 @@ function App() {
     requestAnimationFrame(animation)
   } 
 
-  function handleClickWheel() {
+  function handleClickWheel(e) {
+    e.preventDefault()
+    e.stopPropagation()
     if(wasRotate) {
-      changeOfScene()
+      if(levelQuestion<db[select].questions.length){
+        changeOfScene()
+      }
       setWasRotate(false)
     } else {
       animationRotate();
@@ -129,8 +183,11 @@ function App() {
 
   return (
     <AppBlock>
-      {leftSide}
-      <RightPanel score={score} attempts={attempts}/>
+      <div>{leftSide}</div>
+      <RightPanel 
+        score={score}
+        attempts={attempts}
+        questions = {db[select].questions}/>
     </AppBlock>
   );
 

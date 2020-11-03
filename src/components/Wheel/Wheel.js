@@ -1,14 +1,18 @@
 import React, { useEffect, useState} from 'react';
-import styled from 'styled-components';
+import styled, {keyframes} from 'styled-components';
 import './Wheel.scss';
+
+
 
 const WheelBlock = styled.div`
 display:flex;
 justify-content:center;
 align-items:center;
+
 svg {
 /* animation: wheel 2s linear infinite; */
-
+    width: 27vw;
+    height:27vw;
 }
 `
 
@@ -36,7 +40,7 @@ function Wheel({db,rotate, handleClickWheel , offset}) {
 
         return (
             <span className="circWrap">
-                <svg   width="350px" height="350px" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet" style={{transform: `rotate(${rotate}deg)`}}>
+                <svg    viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet" style={{transform: `rotate(${rotate}deg)`}}>
                 {circs}
             </svg>
             </span>

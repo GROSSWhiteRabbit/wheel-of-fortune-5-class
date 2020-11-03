@@ -12,7 +12,7 @@ box-shadow: 4px 4px 20px rgba(0,0,0,.5);
 
 `
 const H2 = styled.h2`
-font-size: 24px;
+font-size: 1.2rem;
 color: ${({select})=> select? 'red': null};
 `
 
