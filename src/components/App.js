@@ -4,7 +4,7 @@ import RightPanel from './RightPanel/RightPanel';
 import Wheel from './Wheel/Wheel';
 import Theme from './Theme/Theme';
 import QuestionPanel from './QuestionPanel/QuestionPanel';
-import db from '../db';
+import Egg from './Egg/Egg';
 
 window.addEventListener(`resize`, event => {
   const clientWidth = document.documentElement.clientWidth
@@ -12,12 +12,10 @@ window.addEventListener(`resize`, event => {
   document.documentElement.style.fontSize = clientWidth / 84 + 'px'
 });
 
-
 const AppBlock = styled.div`
 display:grid;
 grid-template-columns: 1fr minmax(80px, 15%);
 height: 100vh;
-/* overflow-y: hidden; */
 `;
 
 const jumps = keyframes`
@@ -62,21 +60,17 @@ const Main = styled.div`
 padding: 2%;
 display:grid;
 grid-template-columns: minmax(100px, 25%) 1fr;
-/* border: 1px solid red; */
 height: 100%;
 animation: ${jumps} 1s;
 
 `;
-const Div = styled.div`
-border: 1px solid blue;
-height: 100%;
-`;
 
 
 
 
+function App({db}) {
 
-function App() {
+
 
   const  offset = 360/db.length;
   const [rotate, setRotate] = useState(-offset/2)
@@ -86,6 +80,7 @@ function App() {
   const [attempts, setAttempts] = useState(db[select].questions.length)
   const [wasRotate, setWasRotate] = useState(false)
   const [levelQuestion, setLevelQuestion] = useState(0)
+  const [animated, setAnimated] = useState(false)
 
 
 
@@ -94,7 +89,7 @@ function App() {
 
 
   useEffect(()=>{
-    let s = Math.round(-((rotate+offset/2)%360)/(360/db.length))
+    let s = Math.round(-((rotate+offset/2)%360)/(offset))
     if(s === 8) {
         s = 0
     }
@@ -102,6 +97,7 @@ function App() {
   },[rotate])
   
   function animationRotate( ) {
+    setAnimated(true)
     let der = 2000 + Math.floor(3000* Math.random());
     const turn = 1000 + Math.floor(3000* Math.random());
      der =turn*2
@@ -117,11 +113,13 @@ function App() {
 
       setRotate((rotate)=>rotate - (Math.floor( progres*turn) - turnDifference) );
       turnDifference =  Math.floor( progres*turn)
+
       if(passed <= der) {
           requestAnimationFrame(animation)
       } else{
         start = null;
         setWasRotate(true)
+        setAnimated(false)
       }
     }
     requestAnimationFrame(animation)
@@ -136,7 +134,10 @@ function App() {
       }
       setWasRotate(false)
     } else {
-      animationRotate();
+      if(!animated) {
+        animationRotate();
+
+      }
     }
   }
 
@@ -158,10 +159,19 @@ function App() {
       }
     })
   }
+  function toogleEasterEgg(){
+    setLeftSideStatus(leftSideStatus=> {
+      if(leftSideStatus ==='wheel'){ 
+        return 'easterEgg'
+      } else if(leftSideStatus ==='easterEgg') {
+        return 'wheel'
+      }
+    })
+  }
   
   const MainPanel = (
       <Main>
-        <Theme db={db} rotate={rotate} offset={offset} select={select}/>
+        <Theme db={db} select={select}/>
         <Wheel 
             handleClickWheel = {handleClickWheel} 
             db={db} rotate={rotate} 
@@ -172,7 +182,10 @@ function App() {
   )
 
 
-  const leftSide = leftSideStatus === 'wheel'? MainPanel:
+  const leftSide = leftSideStatus === 'easterEgg'? 
+    <Egg toogleEasterEgg = {toogleEasterEgg}/> : 
+    leftSideStatus === 'wheel'? 
+    MainPanel:
     <QuestionPanel 
       selectThem ={db[select]}
       responseProcessing={responseProcessing}
@@ -187,7 +200,8 @@ function App() {
       <RightPanel 
         score={score}
         attempts={attempts}
-        questions = {db[select].questions}/>
+        questions = {db[select].questions}
+        toogleEasterEgg={toogleEasterEgg}/>
     </AppBlock>
   );
 

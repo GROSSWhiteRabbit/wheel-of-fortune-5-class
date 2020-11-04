@@ -1,5 +1,5 @@
-import React, { useEffect, useState} from 'react';
-import styled, {keyframes} from 'styled-components';
+import React  from 'react';
+import styled from 'styled-components';
 import './Wheel.scss';
 
 
@@ -10,7 +10,6 @@ justify-content:center;
 align-items:center;
 
 svg {
-/* animation: wheel 2s linear infinite; */
     width: 27vw;
     height:27vw;
 }

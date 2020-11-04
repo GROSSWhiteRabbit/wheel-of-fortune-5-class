@@ -1,4 +1,4 @@
-import React, { useEffect, useState} from 'react';
+import React, { useState} from 'react';
 import MathJax from 'react-mathjax2'
 
 import styled, {keyframes, css} from 'styled-components';
@@ -20,6 +20,8 @@ const WrapQuestion = styled.div`
     height: 100%;
     margin: 0 5%;    
     animation: ${fadeIn} 1s;
+    user-select: none;
+
 
 `;
 
@@ -117,10 +119,8 @@ const Button = styled.button`
 `
 
 function QuestionPanel({selectThem: {them, questions}, responseProcessing, changeOfScene,levelQuestion, setLevelQuestion}) {
-    // const [levelQuestion, setLevelQuestion] = useState(0)
-    console.log(questions);
     const {point, questions: questObjs} = questions[levelQuestion]
-    const [numderQustion, setNumderQustion] = useState(Math.floor(Math.random()*questObjs.length) )
+    const [numderQustion] = useState(Math.floor(Math.random()*questObjs.length) )
     const {question, answer, correctAnswer} = questObjs[numderQustion];
     const [state, setState] = useState('chose')
     const [activeTab, setActiveTab] = useState();
@@ -132,7 +132,6 @@ function QuestionPanel({selectThem: {them, questions}, responseProcessing, chang
             }
             if(activeTab===correctAnswer){
                 setState('correct')
-                console.log(point);
 
                 responseProcessing('correct', point)
 
@@ -170,7 +169,7 @@ function QuestionPanel({selectThem: {them, questions}, responseProcessing, chang
         (
             <MathJax.Context
             
-            onLoad={ () => console.log("Loaded MathJax script!") }
+            
             onError={ (MathJax, error) => {
                 console.warn(error);
                 console.log("Encountered a MathJax error, re-attempting a typeset!");

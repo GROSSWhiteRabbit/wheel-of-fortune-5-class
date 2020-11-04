@@ -16,7 +16,7 @@ font-size: 1.2rem;
 color: ${({select})=> select? 'red': null};
 `
 
-function Theme ({db, rotate, offset, select}) {
+function Theme ({db, select}) {
     
 
     function renderThems() {
