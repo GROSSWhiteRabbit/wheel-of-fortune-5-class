@@ -75,7 +75,9 @@ function App({db}) {
   const  offset = 360/db.length;
   const [rotate, setRotate] = useState(-offset/2)
   const [select, setSelect] = useState(0)
+
   const [leftSideStatus,setLeftSideStatus] = useState('wheel')
+
   const [score, setScore] = useState(0)
   const [attempts, setAttempts] = useState(db[select].questions.length)
   const [wasRotate, setWasRotate] = useState(false)
