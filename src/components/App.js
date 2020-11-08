@@ -80,6 +80,8 @@ function App({db}) {
   const [attempts, setAttempts] = useState(db[select].questions.length)
   const [wasRotate, setWasRotate] = useState(false)
   const [levelQuestion, setLevelQuestion] = useState(0)
+
+
   const [animated, setAnimated] = useState(false)
 
 
