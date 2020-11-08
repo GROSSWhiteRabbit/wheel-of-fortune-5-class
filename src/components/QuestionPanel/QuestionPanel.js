@@ -55,10 +55,11 @@ const Answer = styled.div`
     background: rgba(0,0,0,0.3);
     padding: 2%;
     box-shadow: 4px 4px 20px rgba(0,0,0,.5); 
-    width:40%;
+    width:42%;
     height:50%;
     display:grid;
     place-content: center;
+    overflow: hidden;
 
     &:nth-child(1) {
         margin-bottom: 2%;
@@ -68,7 +69,7 @@ const Answer = styled.div`
     }
     span{
         text-align: center;
-        font-size: 20px;
+        font-size: 1.4rem;
     }
     ${({state,active, correct})=> {
         let cssText ='';
@@ -189,7 +190,7 @@ function QuestionPanel({selectThem: {them, questions}, responseProcessing, chang
             <WrapQuestion>
                <Question>
                    <h2>Тема: {them}</h2>
-        <h2>Вопрос на {point} балл:  <MathJax.Text text={ question }/> </h2>
+        <h2>Питання (балів {point}):  <MathJax.Text text={ question }/> </h2>
                </Question>
                <Answers>
                     {renderAnswer()}

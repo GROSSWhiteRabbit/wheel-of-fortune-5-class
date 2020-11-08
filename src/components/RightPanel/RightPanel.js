@@ -19,13 +19,13 @@ function RightPanel ({attempts, score, questions, toogleEasterEgg}) {
     const maxPoin = questions.reduce((accum, {point})=> accum+point, 0)
 return ( 
     <PanelBlock>
-        <h1>Попыток</h1>
+        <h1>Спроб</h1>
         <h2>{attempts}</h2>
-        <h1> Максимум балов</h1>
+        <h1> Максимум балів</h1>
         <h2>{maxPoin}</h2>
         <h1> Набрано</h1>
         <h2>{score}</h2>
-        <span onClick={toogleEasterEgg}>Aaaa!!Что здесь происходит!??</span>
+        <span style={{cursor: "pointer"}} onClick={toogleEasterEgg}>^_^</span>
 
     </PanelBlock>
 )
