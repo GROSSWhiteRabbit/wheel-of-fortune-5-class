@@ -33,6 +33,9 @@ const Question = styled.div`
     box-shadow: 4px 4px 20px rgba(0,0,0,.5); 
     width:100%;
     height:100%;
+    h2 {
+        margin: 1% auto;
+    }
 
 `
 const Answers = styled.div`
