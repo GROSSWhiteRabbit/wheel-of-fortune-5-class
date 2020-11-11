@@ -1,7 +1,7 @@
 import React from 'react';
 import styled, {keyframes} from 'styled-components';
 
-const jumps = keyframes`
+export const jumpsX = keyframes`
    0%,
   60%,
   75%,
@@ -29,7 +29,7 @@ const EggBlock = styled.div`
 padding: 2%;
 width: 100%;
 height: 100%;
-animation: ${jumps} 1s;
+animation: ${jumpsX} 1s;
 border: 1px solid rgba(0,0,0,0.2);
 border-radius: 8px;
 background: rgba(0,0,0,0.3);

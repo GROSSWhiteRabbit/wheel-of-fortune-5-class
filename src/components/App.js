@@ -3,8 +3,8 @@ import styled, {keyframes} from 'styled-components';
 import RightPanel from './RightPanel/RightPanel';
 import Wheel from './Wheel/Wheel';
 import Theme from './Theme/Theme';
-import QuestionPanel from './QuestionPanel/QuestionPanel';
-import Egg from './Egg/Egg';
+import QuestionPanel, {Button} from './QuestionPanel/QuestionPanel';
+import Egg, {jumpsX} from './Egg/Egg';
 
 window.addEventListener(`resize`, event => {
   const clientWidth = document.documentElement.clientWidth
@@ -65,6 +65,35 @@ animation: ${jumps} 1s;
 
 `;
 
+const Modal = styled.div`
+position: fixed;
+background: rgba(0,0,0,0.3);
+height: 100vh;
+width:100%;
+top: 0;
+animation: ${jumpsX} 1s;
+user-select: none;
+
+
+`
+const ContentModal = styled.div`
+margin: 20% auto;
+
+background: #2D132E;
+border: 1px solid rgba(0,0,0,0.2);
+border-radius: 8px;
+box-shadow: 4px 4px 20px rgba(0,0,0,.5); 
+display:grid;
+place-content: center;
+overflow: hidden;
+text-align: center;
+div {
+  position:relative;
+  height:5%;
+}
+
+
+`
 
 
 
@@ -78,13 +107,14 @@ function App({db}) {
 
   const [leftSideStatus,setLeftSideStatus] = useState('wheel')
 
+
   const [score, setScore] = useState(0)
   const [attempts, setAttempts] = useState(db[select].questions.length)
   const [wasRotate, setWasRotate] = useState(false)
   const [levelQuestion, setLevelQuestion] = useState(0)
-
-
+  const [maxPoint] = useState(db[select].questions.reduce((accum, {point})=> accum+point, 0))
   const [animated, setAnimated] = useState(false)
+  const [isDone, setIsDone] = useState(false)
 
 
 
@@ -99,6 +129,12 @@ function App({db}) {
     }
     setSelect(s)
   },[rotate])
+
+  useEffect(()=>{
+    if(attempts <= 0 && leftSideStatus === 'wheel') {
+      setIsDone(true);
+    }
+  },[attempts, leftSideStatus ])
   
   function animationRotate( ) {
     setAnimated(true)
@@ -144,6 +180,12 @@ function App({db}) {
       }
     }
   }
+  function clickRestart() {
+    setScore(0);
+    setLevelQuestion(0);
+    setAttempts(db[select].questions.length);
+    setIsDone(false);
+  }
 
   function responseProcessing(stateResponse, point){
       if(stateResponse === 'correct') {
@@ -165,10 +207,12 @@ function App({db}) {
   }
   function toogleEasterEgg(){
     setLeftSideStatus(leftSideStatus=> {
-      if(leftSideStatus ==='wheel'){ 
+      if(leftSideStatus ==='wheel' && !isDone ){ 
         return 'easterEgg'
       } else if(leftSideStatus ==='easterEgg') {
         return 'wheel'
+      } else {
+        return leftSideStatus;
       }
     })
   }
@@ -197,15 +241,28 @@ function App({db}) {
       levelQuestion={levelQuestion}
       setLevelQuestion={setLevelQuestion}/>;
 
-
+  
   return (
     <AppBlock>
-      <div>{leftSide}</div>
+        <div>{leftSide}</div>
+        {isDone ?(<Modal>
+          <ContentModal>
+            <h1>Тадам!!! Пройдено.</h1>
+            <div><Button onClick={clickRestart}>Спробувати ще раз</Button></div>
+
+            <h2>Ви набрали балів {score} з {maxPoint} </h2>
+          </ContentModal>
+        </Modal>): null}
+        
+        
+      
+      
       <RightPanel 
         score={score}
         attempts={attempts}
-        questions = {db[select].questions}
+        maxPoint={maxPoint}
         toogleEasterEgg={toogleEasterEgg}/>
+        
     </AppBlock>
   );
 

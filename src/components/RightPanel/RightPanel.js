@@ -14,18 +14,18 @@ const PanelBlock = styled.div`
 
 `;
 
-function RightPanel ({attempts, score, questions, toogleEasterEgg}) {
+function RightPanel ({attempts, score, questions, toogleEasterEgg, maxPoint}) {
 
-    const maxPoin = questions.reduce((accum, {point})=> accum+point, 0)
+    // const maxPoin = questions.reduce((accum, {point})=> accum+point, 0)
 return ( 
     <PanelBlock>
         <h1>Спроб</h1>
         <h2>{attempts}</h2>
         <h1> Максимум балів</h1>
-        <h2>{maxPoin}</h2>
-        <h1> Набрано</h1>
+        <h2>{maxPoint}</h2>
+        <h1> Набрано балів</h1>
         <h2>{score}</h2>
-        <span style={{cursor: "pointer"}} onClick={toogleEasterEgg}>^_^</span>
+        <h4 style={{cursor: "pointer"}} onClick={toogleEasterEgg}>^_^</h4>
 
     </PanelBlock>
 )

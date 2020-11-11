@@ -101,7 +101,7 @@ const Answer = styled.div`
         return cssText
     }}
 `
-const Button = styled.button`
+export const Button = styled.button`
     box-shadow: 4px 4px 20px rgba(0,0,0,.5);    
     position:absolute;
     left:50%;
@@ -197,7 +197,7 @@ function QuestionPanel({selectThem: {them, questions}, responseProcessing, chang
                </Question>
                <Answers>
                     {renderAnswer()}
-                    <Button onClick={handleClick}>{state==="chose"?"Ответить":"Дальше"}</Button>
+                    <Button onClick={handleClick}>{state==="chose"?"Відповісти":"Далі"}</Button>
                </Answers>
             </WrapQuestion>
         </MathJax.Context>
