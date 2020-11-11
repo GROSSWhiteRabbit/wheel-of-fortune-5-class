@@ -6,11 +6,13 @@ import Theme from './Theme/Theme';
 import QuestionPanel, {Button} from './QuestionPanel/QuestionPanel';
 import Egg, {jumpsX} from './Egg/Egg';
 
-window.addEventListener(`resize`, event => {
+const resize =  function(){
   const clientWidth = document.documentElement.clientWidth
 
   document.documentElement.style.fontSize = clientWidth / 84 + 'px'
-});
+};
+resize()
+window.addEventListener(`resize`, resize);
 
 const AppBlock = styled.div`
 display:grid;
