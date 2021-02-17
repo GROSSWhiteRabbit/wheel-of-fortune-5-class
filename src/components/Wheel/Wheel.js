@@ -1,5 +1,7 @@
-import React  from 'react';
+import React, { useState }  from 'react';
 import styled from 'styled-components';
+import {useDispatch, useSelector} from 'react-redux';
+import {setRotate, changeOfScene} from '../../reduser/main';
 import './Wheel.scss';
 
 
@@ -15,12 +17,59 @@ svg {
 }
 `
 
-function Wheel({db,rotate, handleClickWheel , offset}) {
+function Wheel() {
 
+    const {db, rotate, offset} = useSelector(state => state.main)
+ 
+    const dispatch = useDispatch();
 
+    const [wasRotate, setWasRotate] = useState(false)
+    const [animated, setAnimated] = useState(false)
 
         
+    function animationRotate( ) {
 
+        setAnimated(true)
+        let der = 2000 + Math.floor(3000* Math.random());
+        const turn = 1000 + Math.floor(3000* Math.random());
+         der =turn*2
+        let start = null,
+            turnDifference = 0;
+        function animation(time) {
+          if (!start){
+            start = time;
+          }
+          let passed =  time - start ,
+          lineProgress = passed/der;
+          const progres = lineProgress +  lineProgress**2*(1-lineProgress);
+          dispatch(setRotate({progres, turn, turnDifference}));
+          turnDifference =  Math.floor( progres*turn);
+    
+          if(passed <= der) {
+              requestAnimationFrame(animation)
+          } else{
+            start = null;
+            setWasRotate(true)
+            setAnimated(false)
+          }
+        }
+        requestAnimationFrame(animation)
+      } 
+    
+      function handleClickWheel(e) {
+        e.preventDefault()
+        e.stopPropagation()
+
+        if(wasRotate) {
+            dispatch(changeOfScene())
+            setWasRotate(false)
+        } else {
+          if(!animated) {
+            animationRotate();
+    
+          }
+        }
+      }
 
     function RenderWheel() {
         const circs =  db.map((item, i)=>{

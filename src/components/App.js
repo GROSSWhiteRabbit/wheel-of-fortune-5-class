@@ -1,18 +1,14 @@
-import React, { useEffect, useState} from 'react';
+import React from 'react';
 import styled, {keyframes} from 'styled-components';
+import {useDispatch, useSelector} from 'react-redux';
+import {restartQuest} from '../reduser/main';
 import RightPanel from './RightPanel/RightPanel';
 import Wheel from './Wheel/Wheel';
 import Theme from './Theme/Theme';
 import QuestionPanel, {Button} from './QuestionPanel/QuestionPanel';
 import Egg, {jumpsX} from './Egg/Egg';
 
-const resize =  function(){
-  const clientWidth = document.documentElement.clientWidth
 
-  document.documentElement.style.fontSize = clientWidth / 84 + 'px'
-};
-resize()
-window.addEventListener(`resize`, resize);
 
 const AppBlock = styled.div`
 display:grid;
@@ -99,149 +95,32 @@ div {
 
 
 
-function App({db}) {
+function App() {
 
+  const dispatch = useDispatch();
+console.log(useSelector(state=>state), 'ok');
+  const {
+    leftSideStatus,
+     isDone,
+     score,
+     maxPoint
+    } = useSelector(state=>state.main)
 
-
-  const  offset = 360/db.length;
-  const [rotate, setRotate] = useState(-offset/2)
-  const [select, setSelect] = useState(0)
-
-  const [leftSideStatus,setLeftSideStatus] = useState('wheel')
-
-
-  const [score, setScore] = useState(0)
-  const [attempts, setAttempts] = useState(db[select].questions.length)
-  const [wasRotate, setWasRotate] = useState(false)
-  const [levelQuestion, setLevelQuestion] = useState(0)
-  const [maxPoint] = useState(db[select].questions.reduce((accum, {point})=> accum+point, 0))
-  const [animated, setAnimated] = useState(false)
-  const [isDone, setIsDone] = useState(false)
-
-
-
-
-
-
-
-  useEffect(()=>{
-    let s = Math.round(-((rotate+offset/2)%360)/(offset))
-    if(s === 8) {
-        s = 0
-    }
-    setSelect(s)
-  },[rotate])
-
-  useEffect(()=>{
-    if(attempts <= 0 && leftSideStatus === 'wheel') {
-      setIsDone(true);
-    }
-  },[attempts, leftSideStatus ])
   
-  function animationRotate( ) {
-    setAnimated(true)
-    let der = 2000 + Math.floor(3000* Math.random());
-    const turn = 1000 + Math.floor(3000* Math.random());
-     der =turn*2
-    let start = null,
-        turnDifference = 0;
-    function animation(time) {
-      if (!start){
-        start = time;
-      }
-      let passed =  time - start ,
-      lineProgress = passed/der;
-      const progres = lineProgress +  lineProgress**2*(1-lineProgress);
+const onclickRestart = ()=> dispatch(restartQuest())
 
-      setRotate((rotate)=>rotate - (Math.floor( progres*turn) - turnDifference) );
-      turnDifference =  Math.floor( progres*turn)
-
-      if(passed <= der) {
-          requestAnimationFrame(animation)
-      } else{
-        start = null;
-        setWasRotate(true)
-        setAnimated(false)
-      }
-    }
-    requestAnimationFrame(animation)
-  } 
-
-  function handleClickWheel(e) {
-    e.preventDefault()
-    e.stopPropagation()
-    if(wasRotate) {
-      if(levelQuestion<db[select].questions.length){
-        changeOfScene()
-      }
-      setWasRotate(false)
-    } else {
-      if(!animated) {
-        animationRotate();
-
-      }
-    }
-  }
-  function clickRestart() {
-    setScore(0);
-    setLevelQuestion(0);
-    setAttempts(db[select].questions.length);
-    setIsDone(false);
-  }
-
-  function responseProcessing(stateResponse, point){
-      if(stateResponse === 'correct') {
-        setScore((score)=>score+point)
-        setAttempts((attempts)=>attempts-1)
-      } else if(stateResponse === 'wrong') {
-        setAttempts((attempts)=>attempts-1)
-      }
-      
-  }
-  function changeOfScene() {
-    setLeftSideStatus(leftSideStatus=> {
-      if(leftSideStatus ==='wheel'){ 
-        return 'question'
-      } else if(leftSideStatus ==='question') {
-        return 'wheel'
-      }
-    })
-  }
-  function toogleEasterEgg(){
-    setLeftSideStatus(leftSideStatus=> {
-      if(leftSideStatus ==='wheel' && !isDone ){ 
-        return 'easterEgg'
-      } else if(leftSideStatus ==='easterEgg') {
-        return 'wheel'
-      } else {
-        return leftSideStatus;
-      }
-    })
-  }
   
   const MainPanel = (
       <Main>
-        <Theme db={db} select={select}/>
-        <Wheel 
-            handleClickWheel = {handleClickWheel} 
-            db={db} rotate={rotate} 
-            offset={offset}
-
-            />
+        <Theme/>
+        <Wheel/>
       </Main>
   )
 
 
   const leftSide = leftSideStatus === 'easterEgg'? 
-    <Egg toogleEasterEgg = {toogleEasterEgg}/> : 
-    leftSideStatus === 'wheel'? 
-    MainPanel:
-    <QuestionPanel 
-      selectThem ={db[select]}
-      responseProcessing={responseProcessing}
-      changeOfScene={changeOfScene}
-      levelQuestion={levelQuestion}
-      setLevelQuestion={setLevelQuestion}/>;
+    <Egg/> : leftSideStatus === 'wheel'? 
+    MainPanel:<QuestionPanel/>;
 
   
   return (
@@ -250,7 +129,7 @@ function App({db}) {
         {isDone ?(<Modal>
           <ContentModal>
             <h1>Тадам!!! Пройдено.</h1>
-            <div><Button onClick={clickRestart}>Спробувати ще раз</Button></div>
+            <div><Button onClick={onclickRestart}>Спробувати ще раз</Button></div>
 
             <h2>Ви набрали балів {score} з {maxPoint} </h2>
           </ContentModal>
@@ -259,11 +138,7 @@ function App({db}) {
         
       
       
-      <RightPanel 
-        score={score}
-        attempts={attempts}
-        maxPoint={maxPoint}
-        toogleEasterEgg={toogleEasterEgg}/>
+      <RightPanel/>
         
     </AppBlock>
   );

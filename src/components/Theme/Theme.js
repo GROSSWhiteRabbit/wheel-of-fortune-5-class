@@ -1,5 +1,7 @@
 import React  from 'react';
 import styled from 'styled-components';
+import {useSelector} from 'react-redux';
+
 
 
 const ThemeBlock = styled.div`
@@ -16,8 +18,8 @@ font-size: 1.2rem;
 color: ${({select})=> select? 'red': null};
 `
 
-function Theme ({db, select}) {
-    
+function Theme () {
+    const {db, select} = useSelector(state=>state.main);
 
     function renderThems() {
         if(!db){

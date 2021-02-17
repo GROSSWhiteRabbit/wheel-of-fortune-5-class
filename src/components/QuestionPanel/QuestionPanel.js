@@ -1,6 +1,7 @@
 import React, { useState} from 'react';
 import MathJax from 'react-mathjax2'
-
+import {useDispatch, useSelector} from 'react-redux';
+import {responseCorrect, responseWrong, upLevelQuestion,changeOfScene} from '../../reduser/main';
 import styled, {keyframes, css} from 'styled-components';
 
 const fadeIn = keyframes`
@@ -122,47 +123,49 @@ export const Button = styled.button`
     }
 `
 
-function QuestionPanel({selectThem: {them, questions}, responseProcessing, changeOfScene,levelQuestion, setLevelQuestion}) {
+function QuestionPanel() {
+    const dispatch = useDispatch()
+    const {db, select, levelQuestion} = useSelector(state=> state.main)
+    const {them, questions} = db[select];
     const {point, questions: questObjs} = questions[levelQuestion]
     const [numderQustion] = useState(Math.floor(Math.random()*questObjs.length) )
     const {question, answer, correctAnswer} = questObjs[numderQustion];
     const [state, setState] = useState('chose')
     const [activeTab, setActiveTab] = useState();
 
-    function handleClick() {
+    function onClickButton() {
         if (state === 'chose'){
             if(!activeTab &&activeTab!==0){
                 return
             }
             if(activeTab===correctAnswer){
-                setState('correct')
-
-                responseProcessing('correct', point)
+                setState('correct');
+                dispatch(responseCorrect(point));
 
             }
             if(activeTab!==correctAnswer){
-                setState('wrong')
-                responseProcessing('wrong',point)
+                setState('wrong');
+                dispatch(responseWrong());
             }
         } else {
-            setLevelQuestion((levelQuestion)=>levelQuestion+1);
-            changeOfScene()
+            dispatch(upLevelQuestion());
+            dispatch(changeOfScene())
             
         }
 
     }
-    function selectTab(i) {
+    function onSelectTab(i) {
         if(state==='chose') {
             setActiveTab(i);
         }
     }
     function renderAnswer() {
         return answer.map((item, i) => {
-            let active = (activeTab === i);
-            let correct = (correctAnswer === i);
+            const active = (activeTab === i);
+            const correct = (correctAnswer === i);
 
             return (
-            <Answer onClick={()=>selectTab(i)} correct={correct} state ={state} active={active}>
+            <Answer onClick={()=>onSelectTab(i)} correct={correct} state ={state} active={active}>
                        <span><MathJax.Text text={ item }/></span>
                    </Answer  >
             )   
@@ -197,7 +200,7 @@ function QuestionPanel({selectThem: {them, questions}, responseProcessing, chang
                </Question>
                <Answers>
                     {renderAnswer()}
-                    <Button onClick={handleClick}>{state==="chose"?"Відповісти":"Далі"}</Button>
+                    <Button onClick={onClickButton}>{state==="chose"?"Відповісти":"Далі"}</Button>
                </Answers>
             </WrapQuestion>
         </MathJax.Context>

@@ -1,5 +1,7 @@
 import React from 'react';
 import styled, {keyframes} from 'styled-components';
+import {useDispatch} from 'react-redux';
+import {toogleEasterEgg} from '../../reduser/main';
 
 export const jumpsX = keyframes`
    0%,
@@ -40,11 +42,12 @@ align-items:center;
 
 `;
 
-function Egg({toogleEasterEgg}) {
+function Egg() {
+  const dispatch = useDispatch();
 
     return (
-        <EggBlock onClick={toogleEasterEgg}>
-            <h1>Здравствуй шукач. Тобі потрапила унікальна річ, можливість дізнатися на що ти здатний як маленький мислитель, а може і великий. Випробуй свої сили, раптом весь світ для тебе всього лише маленька ступінь, і ти здатний прогинати сам всесвіт під себе...</h1>
+        <EggBlock onClick={()=>dispatch(toogleEasterEgg())}>
+            <h1>Здравствуй шукач. Тобі потрапила унікальна річ, можливість дізнатися на що ти здатний як маленький мислитель, а може і великий. Випробуй свої сили, раптом весь світ для тебе всього лише маленька сходинка, і ти здатний прогинати сам всесвіт під себе...</h1>
         </EggBlock>
     )
 }
