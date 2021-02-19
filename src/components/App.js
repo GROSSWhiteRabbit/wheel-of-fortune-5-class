@@ -129,7 +129,7 @@ const onclickRestart = ()=> dispatch(restartQuest())
         {isDone ?(<Modal>
           <ContentModal>
             <h1>Тадам!!! Пройдено.</h1>
-            <div><Button onClick={onclickRestart}>Спробувати ще раз</Button></div>
+            <div><Button active={true} onClick={onclickRestart}>Спробувати ще раз</Button></div>
 
             <h2>Ви набрали балів {score} з {maxPoint} </h2>
           </ContentModal>

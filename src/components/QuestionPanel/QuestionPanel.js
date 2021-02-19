@@ -54,6 +54,8 @@ const Answers = styled.div`
 
 `
 const Answer = styled.div`
+    
+
     border: 1px solid rgba(0,0,0,0.2);
     border-radius: 8px;
     background: rgba(0,0,0,0.3);
@@ -79,6 +81,7 @@ const Answer = styled.div`
         let cssText ='';
         if(state === 'chose' && !active){
             cssText += css`
+            cursor: pointer;
             &:hover{
                 border-color:#BB968D;
             }
@@ -86,6 +89,7 @@ const Answer = styled.div`
         }
         if(active&& state === 'chose') {
             cssText += css`
+                cursor: pointer;
                 border-color:#ed785b    ;
             `
         }
@@ -113,24 +117,36 @@ export const Button = styled.button`
     color: inherit;
     outline:none;
     border-radius: 4px;
-    background: #d53e07;
-    color:#5A092A;
+    color:rgba(16, 16, 16, 0.3);
     padding: 4px 8px;
+    background:rgba(118, 118, 118, 0.3);
     font-weight: 800;
     text-align: center;
-    &:hover{
-        background-color: #aa3206;
-    }
+    ${({active})=> {
+        if(active>=0) {
+            console.log(active)
+            return css`
+            cursor:pointer;
+            background: #d53e07;
+            color:#5A092A;
+            &:hover{
+                background-color: #aa3206;
+            }
+            `
+            
+        }   
+    }}
+    
 `
 
 function QuestionPanel() {
     const dispatch = useDispatch()
-    const {db, select, levelQuestion} = useSelector(state=> state.main)
+    const {db, select, levelQuestion} = useSelector(state=> state.main);
     const {them, questions} = db[select];
-    const {point, questions: questObjs} = questions[levelQuestion]
-    const [numderQustion] = useState(Math.floor(Math.random()*questObjs.length) )
+    const {point, questions: questObjs} = questions[levelQuestion];
+    const [numderQustion] = useState(Math.floor(Math.random()*questObjs.length) );
     const {question, answer, correctAnswer} = questObjs[numderQustion];
-    const [state, setState] = useState('chose')
+    const [state, setState] = useState('chose');
     const [activeTab, setActiveTab] = useState();
 
     function onClickButton() {
@@ -200,7 +216,7 @@ function QuestionPanel() {
                </Question>
                <Answers>
                     {renderAnswer()}
-                    <Button onClick={onClickButton}>{state==="chose"?"Відповісти":"Далі"}</Button>
+                    <Button disabled ={!(activeTab>=0)} active={activeTab} onClick={onClickButton}>{state==="chose"?"Відповісти":"Далі"}</Button>
                </Answers>
             </WrapQuestion>
         </MathJax.Context>

@@ -10,6 +10,7 @@ const WheelBlock = styled.div`
 display:flex;
 justify-content:center;
 align-items:center;
+cursor:pointer;
 
 svg {
     width: 27vw;
