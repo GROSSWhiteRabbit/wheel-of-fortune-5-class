@@ -1,6 +1,6 @@
 {
-  "homepage": "http://osyayannya.pp.ua/wheel-of-fortune/",
-  "name": "wheel-of-fortune",
+  "homepage": "https://GROSSWhiteRabbit.github.io/wheel-of-fortune-5-class",
+  "name": "wheel-of-fortune-5-class",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -44,6 +44,8 @@
     ]
   },
   "devDependencies": {
+    "eslint": "^7.21.0",
+    "eslint-plugin-react": "^7.22.0",
     "gh-pages": "^3.1.0"
   }
 }
